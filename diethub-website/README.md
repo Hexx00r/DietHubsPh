@@ -1,0 +1,1 @@
+# Diet Hub Website — Implementation GuideThis is a complete, modern, single-page website for **Diet Hub** built with HTML, CSS, and vanilla JavaScript. It is fully responsive and ready for deployment.
