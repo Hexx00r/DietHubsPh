@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diet Hub — Healthy Meal Prep · Maasin, Southern Leyte</title>
+<meta name="description" content="Diet Hub makes healthy eating simple and convenient even on your busiest days. Fresh meal prep, platters, and whole wheat banana bread in Maasin, Southern Leyte. Order online.">
+<link rel="icon" href="images/logo.png" type="image/png">
+<link rel="preload" as="image" href="images/food/cajun-meal.webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-400.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-500.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-600.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-700.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/playfairdisplay-600.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/playfairdisplay-700.woff2">
+<link rel="stylesheet" href="css/style.min.css">
+<script src="js/main.min.js" defer></script>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="container">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="Diet Hub logo" width="40" height="40">
+      <span class="logo-text">Diet Hub</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="menu.html" class="nav-link">Menu</a></li>
+      <li><a href="order.html" class="nav-link cart-link">Order <span class="cart-count js-cart-count" style="display:none">0</span></a></li>
+      <li><a href="contact.html" class="nav-link">Contact</a></li>
+      <li><a href="order.html" class="btn btn-primary order-nav-btn">Order Now</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <div class="hero-content">
+      <span class="hero-badge">Fresh · From scratch · Guilt-free</span>
+      <h1 class="hero-title">Healthy eating, <span class="text-accent">made simple</span></h1>
+      <p class="hero-subtitle">Fresh meal prep cooked from scratch in Maasin, Southern Leyte — premium brown rice, no artificial preservatives, packed in eco-friendly containers.</p>
+      <div class="hero-cta">
+        <a href="order.html" class="btn btn-primary btn-lg">Order Now</a>
+        <a href="menu.html" class="btn btn-outline btn-lg">View Menu</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-number">150+</span><span class="stat-label">Meals served weekly</span></div>
+        <div class="stat"><span class="stat-number">6</span><span class="stat-label">Days a week</span></div>
+        <div class="stat"><span class="stat-number">4.9★</span><span class="stat-label">Customer rating</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <img src="images/food/cajun-meal.webp" alt="Cajun seafood meal with brown rice, corn and egg" width="800" height="680" fetchpriority="high" decoding="async">
+    </div>
+  </div>
+</header>
+
+<!-- FEATURED -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Best Sellers</span>
+      <h2 class="section-title">Featured Favorites</h2>
+      <p class="section-desc">The dishes our customers keep coming back for. Add them straight to your order.</p>
+    </div>
+    <div class="menu-grid">
+      <article class="menu-item reveal">
+        <div class="menu-item-img">
+          <span class="menu-item-tag">Best Seller</span>
+          <img src="images/food/chicken-rice-bowl.webp" alt="Chicken rice bowl with brown rice and veggies" width="800" height="600" loading="lazy" decoding="async">
+        </div>
+        <div class="menu-item-body">
+          <h4>Chicken Rice Bowl</h4>
+          <p>Grilled chicken over premium brown rice with buttered vegetables.</p>
+          <div class="menu-item-foot">
+            <span class="menu-item-price">₱150</span>
+            <button type="button" class="add-btn js-add" data-id="chicken-rice-bowl" data-name="Chicken Rice Bowl" data-price="150">Add to Order</button>
+          </div>
+        </div>
+      </article>
+      <article class="menu-item reveal">
+        <div class="menu-item-img">
+          <img src="images/food/salmon-pesto-pasta.webp" alt="Salmon pesto pasta" width="800" height="600" loading="lazy" decoding="async">
+        </div>
+        <div class="menu-item-body">
+          <h4>Salmon Pesto Pasta</h4>
+          <p>Flaked salmon tossed in fresh basil pesto — a house favorite.</p>
+          <div class="menu-item-foot">
+            <span class="menu-item-price">₱180</span>
+            <button type="button" class="add-btn js-add" data-id="salmon-pesto-pasta" data-name="Salmon Pesto Pasta" data-price="180">Add to Order</button>
+          </div>
+        </div>
+      </article>
+      <article class="menu-item reveal">
+        <div class="menu-item-img">
+          <span class="menu-item-tag">Limited</span>
+          <img src="images/food/seafood-boil.webp" alt="Seafood boil platter with shrimp and squid" width="800" height="600" loading="lazy" decoding="async">
+        </div>
+        <div class="menu-item-body">
+          <h4>Seafood Boil Platter</h4>
+          <p>Shrimp, squid and more in rich Cajun butter sauce. Good for sharing.</p>
+          <div class="menu-item-foot">
+            <span class="menu-item-price">₱450</span>
+            <button type="button" class="add-btn js-add" data-id="seafood-boil" data-name="Seafood Boil Platter" data-price="450">Add to Order</button>
+          </div>
+        </div>
+      </article>
+      <article class="menu-item reveal">
+        <div class="menu-item-img">
+          <img src="images/food/chocolate-brownies.webp" alt="Whole wheat chocolate brownies" width="800" height="600" loading="lazy" decoding="async">
+        </div>
+        <div class="menu-item-body">
+          <h4>Chocolate Brownies</h4>
+          <p>Fudgy whole-wheat chocolate brownies — the guilt-free kind.</p>
+          <div class="menu-item-foot">
+            <span class="menu-item-price">₱120</span>
+            <button type="button" class="add-btn js-add" data-id="chocolate-brownies" data-name="Chocolate Brownies" data-price="120">Add to Order</button>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div style="text-align:center;margin-top:40px">
+      <a href="menu.html" class="btn btn-outline btn-lg">See the Full Menu</a>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO BANNERS -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">This Week</span>
+      <h2 class="section-title">Promos &amp; Specials</h2>
+      <p class="section-desc">Limited runs and reservation-only specials — grab them while slots last.</p>
+    </div>
+    <div class="promo-grid">
+      <div class="promo-banner reveal">
+        <img src="images/food/cajun-poster.webp" alt="Cajun seafood with brown rice promo" width="800" height="600" loading="lazy" decoding="async">
+        <div class="promo-content">
+          <span class="promo-tag">Reservation only · 20 slots</span>
+          <h3>Cajun Seafood Week</h3>
+          <p>Cajun seafood with brown rice — running while slots last.</p>
+          <a href="order.html" class="btn btn-light">Reserve Yours</a>
+        </div>
+      </div>
+      <div class="promo-banner reveal">
+        <img src="images/food/banana-poster.webp" alt="Whole wheat banana bread menu" width="800" height="600" loading="lazy" decoding="async">
+        <div class="promo-content">
+          <span class="promo-tag">Baked fresh · Mon · Tue · Thu · Fri</span>
+          <h3>Whole Wheat Banana Bread</h3>
+          <p>Moist, soft and deliciously sweet. No artificial preservatives, ever.</p>
+          <a href="menu.html" class="btn btn-light">View Flavors</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Easy as 1-2-3</span>
+      <h2 class="section-title">How It Works</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step-number">1</span>
+        <div class="step-icon">🍱</div>
+        <h4>Pick your meals</h4>
+        <p>Choose from the weekly menu, best sellers, or build a meal plan that fits your week.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step-number">2</span>
+        <div class="step-icon">📝</div>
+        <h4>Place your order</h4>
+        <p>Check out online in under a minute — we confirm your slot and send payment details.</p>
+      </div>
+      <div class="step reveal">
+        <span class="step-number">3</span>
+        <div class="step-icon">🛵</div>
+        <h4>Enjoy fresh</h4>
+        <p>Pickup in Maasin or get free delivery within the city on meal plans. Microwave 2–3 minutes and enjoy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Meal Plans</span>
+      <h2 class="section-title">Simple Plans, Honest Prices</h2>
+      <p class="section-desc">Pick a plan, choose your dishes for each day, and leave the rest to us.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <h4>1-Day Trial</h4>
+        <div class="pricing-price"><span class="currency">₱</span><span class="amount">150</span><span class="period"> / meal</span></div>
+        <ul class="pricing-features">
+          <li>Try any day from the weekly menu</li>
+          <li>Premium brown rice, always</li>
+          <li>Pickup or delivery</li>
+        </ul>
+        <a href="order.html" class="btn btn-outline btn-block">Start Trial</a>
+      </div>
+      <div class="pricing-card popular reveal">
+        <span class="popular-badge">Most Popular</span>
+        <h4>3-Day Plan</h4>
+        <div class="pricing-price"><span class="currency">₱</span><span class="amount">420</span><span class="period"> / week</span></div>
+        <ul class="pricing-features">
+          <li>Any 3 days you choose</li>
+          <li>Free delivery within Maasin</li>
+          <li>Swap dishes anytime</li>
+        </ul>
+        <a href="order.html" class="btn btn-primary btn-block">Choose Plan</a>
+      </div>
+      <div class="pricing-card reveal">
+        <h4>6-Day Plan</h4>
+        <div class="pricing-price"><span class="currency">₱</span><span class="amount">780</span><span class="period"> / week</span></div>
+        <ul class="pricing-features">
+          <li>Monday to Saturday coverage</li>
+          <li>Free delivery within Maasin</li>
+          <li>Best value per meal</li>
+        </ul>
+        <a href="order.html" class="btn btn-outline btn-block">Choose Plan</a>
+      </div>
+    </div>
+    <p class="pricing-note">Craving something off-menu? We cater best sellers on request — just leave a note with your order.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2 class="cta-title">Ready to eat well?</h2>
+      <p class="cta-desc">Order in under a minute. Fresh meals, honest ingredients, zero hassle.</p>
+      <div class="cta-buttons">
+        <a href="order.html" class="btn btn-light btn-lg">Order Now</a>
+        <a href="https://www.facebook.com/diethub.ph" target="_blank" rel="noopener" class="btn btn-outline-light btn-lg">Follow us on Facebook</a>
+      </div>
+      <p class="cta-note">Monday – Saturday · Maasin, Southern Leyte</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>Diet Hub</h3>
+        <p>Healthy meal prep made from scratch in Maasin, Southern Leyte. Premium brown rice, no artificial preservatives, eco-friendly packaging.</p>
+        <div class="social-links">
+          <a href="https://www.facebook.com/diethub.ph" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg>
+          </a>
+          <a href="https://m.me/diethub.ph" target="_blank" rel="noopener" aria-label="Messenger">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2C6.36 2 2 6.13 2 11.24c0 2.9 1.43 5.48 3.68 7.18V22l3.36-1.86c.9.25 1.85.39 2.84.39 5.64 0 10-4.13 10-9.24S17.64 2 12 2zm5.53 12.41-2.36-2.5-4.6 2.5 4.82-5.1 2.4 2.5 4.14-2.5-4.4 5.1z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="order.html">Order</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Visit Us</h4>
+        <ul>
+          <li>Maasin, Southern Leyte</li>
+          <li>Monday – Saturday</li>
+          <li><a href="https://www.facebook.com/diethub.ph" target="_blank" rel="noopener">facebook.com/diethub.ph</a></li>
+          <li><a href="https://m.me/diethub.ph" target="_blank" rel="noopener">m.me/diethub.ph</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 Diet Hub · Maasin, Southern Leyte · Eat well. Live well. Be well.</div>
+  </div>
+</footer>
+
+</body>
+</html>

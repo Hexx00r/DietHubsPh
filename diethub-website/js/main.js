@@ -1,259 +1,448 @@
+/* Diet Hub — shared site behaviour: navbar, reveal animations, cart, order submission */
 (function () {
   'use strict';
 
-  // Navbar
-  var navbar = document.getElementById('navbar');
-  var navToggle = document.getElementById('navToggle');
-  var navMenu = document.getElementById('navMenu');
-  var navLinks = document.querySelectorAll('.nav-link');
-
-  // Menu tabs
-  var tabBtns = document.querySelectorAll('.tab-btn');
-  var tabContents = document.querySelectorAll('.tab-content');
-
-  // Order modal
-  var orderModal = document.getElementById('orderModal');
-  var modalOverlay = document.getElementById('modalOverlay');
-  var modalClose = document.getElementById('modalClose');
-  var orderForm = document.getElementById('orderForm');
-  var modalSuccess = document.getElementById('modalSuccess');
-  var successClose = document.getElementById('successClose');
-  var orderTrigger = document.getElementById('orderTrigger');
-
-  // Form fields
-  var planSelect = document.getElementById('planSelect');
-  var deliverySelect = document.getElementById('deliverySelect');
-  var areaSelect = document.getElementById('areaSelect');
-  var addressInput = document.getElementById('addressInput');
-  var deliveryFields = document.getElementById('deliveryFields');
-  var totalAmount = document.getElementById('totalAmount');
-  var totalInput = document.getElementById('totalInput');
-  var timestampInput = document.getElementById('timestampInput');
-
-  // Pricing data
-  var PLAN_PRICES = { '1day': 150, '3day': 420, '6day': 780, bread: 0, custom: 0 };
+  /* ------------------------------------------------------------------ *
+   *  Configuration
+   * ------------------------------------------------------------------ */
+  // Inbound webhook feeding the GoHighLevel automation (verified 200 OK on 2026-09-07).
+  // If this endpoint is unavailable at order time, orders are saved locally as a mock.
+  var WEBHOOK_URL = 'https://hook.eu1.make.com/cibub2nibjh4vir5g4x8lcfcr9lramad';
+  var WEBHOOK_TIMEOUT_MS = 12000;
+  var CART_KEY = 'diethub_cart';
+  var MOCK_KEY = 'diethub_mock_orders';
   var AREA_FEES = { poblacion: 0, ichon: 30, ibarra: 20, libog: 20, other: 15 };
 
-  // Make.com webhook (GHL automation)
-  var WEBHOOK_URL = 'https://hook.eu1.make.com/cibub2nibjh4vir5g4x8lcfcr9lramad';
+  /* ------------------------------------------------------------------ *
+   *  Helpers
+   * ------------------------------------------------------------------ */
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+
+  function pesos(n) {
+    return '₱' + Number(n || 0).toLocaleString('en-PH');
+  }
 
   // Normalize PH phone numbers to +63 format for GHL
   function formatPhone(phone) {
-    phone = phone.replace(/\D/g, '');
-    if (phone.startsWith('63')) {
-      phone = phone.slice(2);
-    }
-    if (phone.startsWith('0')) {
-      phone = phone.slice(1);
-    }
+    phone = String(phone || '').replace(/\D/g, '');
+    if (phone.indexOf('63') === 0) { phone = phone.slice(2); }
+    if (phone.indexOf('0') === 0) { phone = phone.slice(1); }
     return '+63' + phone;
   }
 
-  window.addEventListener('scroll', function () {
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
+  var toastEl = null;
+  var toastTimer = null;
+  function toast(msg) {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'toast';
+      toastEl.setAttribute('role', 'status');
+      document.body.appendChild(toastEl);
     }
-  });
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+  }
 
-  navToggle.addEventListener('click', function () {
-    navMenu.classList.toggle('active');
-    var spans = navToggle.querySelectorAll('span');
-    if (navMenu.classList.contains('active')) {
-      spans[0].style.transform = 'rotate(45deg) translate(5px,5px)';
-      spans[1].style.opacity = '0';
-      spans[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
-    } else {
-      spans[0].style.transform = '';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = '';
+  /* ------------------------------------------------------------------ *
+   *  Navbar: scroll state, mobile toggle, active link
+   * ------------------------------------------------------------------ */
+  var navbar = $('#navbar');
+  var navToggle = $('#navToggle');
+  var navMenu = $('#navMenu');
+
+  function closeMobileNav() {
+    if (!navMenu) { return; }
+    navMenu.classList.remove('active');
+    if (navToggle) {
+      $$('span', navToggle).forEach(function (s) { s.style.transform = ''; s.style.opacity = '1'; });
     }
-  });
+  }
 
-  navLinks.forEach(function (link) {
-    link.addEventListener('click', function () {
-      navMenu.classList.remove('active');
-      var spans = navToggle.querySelectorAll('span');
-      spans[0].style.transform = '';
-      spans[1].style.opacity = '1';
-      spans[2].style.transform = '';
+  if (navbar) {
+    window.addEventListener('scroll', function () {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  }
+
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', function () {
+      var open = navMenu.classList.toggle('active');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var spans = $$('span', navToggle);
+      if (spans.length >= 3) {
+        spans[0].style.transform = open ? 'rotate(45deg) translate(5px,5px)' : '';
+        spans[1].style.opacity = open ? '0' : '1';
+        spans[2].style.transform = open ? 'rotate(-45deg) translate(5px,-5px)' : '';
+      }
     });
-  });
+    $$('.nav-link', navMenu).forEach(function (link) {
+      link.addEventListener('click', closeMobileNav);
+    });
+  }
 
-  tabBtns.forEach(function (btn) {
+  // Highlight the current page in the navbar
+  (function setActiveNav() {
+    var page = location.pathname.split('/').pop() || 'index.html';
+    $$('.nav-link').forEach(function (link) {
+      var href = link.getAttribute('href');
+      if (href === page || (page === '' && href === 'index.html')) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      }
+    });
+  })();
+
+  /* ------------------------------------------------------------------ *
+   *  Reveal-on-scroll animations
+   * ------------------------------------------------------------------ */
+  (function initReveal() {
+    var targets = $$('.reveal');
+    if (!targets.length) { return; }
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(function (el) { io.observe(el); });
+  })();
+
+  /* ------------------------------------------------------------------ *
+   *  Menu category tabs
+   * ------------------------------------------------------------------ */
+  (function initTabs() {
+    var tabBtns = $$('.tab-btn');
+    if (!tabBtns.length) { return; }
+    tabBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        tabBtns.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        $$('.tab-content').forEach(function (c) { c.classList.remove('active'); });
+        var panel = document.getElementById(btn.getAttribute('data-tab'));
+        if (panel) { panel.classList.add('active'); }
+      });
+    });
+  })();
+
+  /* ------------------------------------------------------------------ *
+   *  Cart (localStorage)
+   * ------------------------------------------------------------------ */
+  function getCart() {
+    try {
+      var cart = JSON.parse(localStorage.getItem(CART_KEY));
+      return Array.isArray(cart) ? cart : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartBadges();
+    if ($('#cartItems')) { renderCart(); }
+  }
+
+  function cartCount() {
+    return getCart().reduce(function (sum, item) { return sum + item.qty; }, 0);
+  }
+
+  function updateCartBadges() {
+    var n = cartCount();
+    $$('.js-cart-count').forEach(function (badge) {
+      badge.textContent = n;
+      badge.style.display = n > 0 ? 'inline-flex' : 'none';
+    });
+  }
+
+  function addToCart(item) {
+    var cart = getCart();
+    var existing = null;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].id === item.id) { existing = cart[i]; break; }
+    }
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
+    }
+    saveCart(cart);
+    toast(item.name + ' added to your order');
+  }
+
+  // Wire every "Add to Order" button on the page
+  $$('.js-add').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var tab = btn.dataset.tab;
-      tabBtns.forEach(function (b) { b.classList.remove('active'); });
-      btn.classList.add('active');
-      tabContents.forEach(function (c) { c.classList.remove('active'); });
-      document.getElementById(tab).classList.add('active');
+      addToCart({
+        id: btn.getAttribute('data-id'),
+        name: btn.getAttribute('data-name'),
+        price: parseInt(btn.getAttribute('data-price'), 10) || 0
+      });
+      btn.classList.add('added');
+      var original = btn.textContent;
+      btn.textContent = 'Added ✓';
+      setTimeout(function () {
+        btn.classList.remove('added');
+        btn.textContent = original;
+      }, 1400);
     });
   });
 
-  // Order modal open/close
-  function openModal() {
-    orderModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  /* ------------------------------------------------------------------ *
+   *  Order page: cart summary + checkout form
+   * ------------------------------------------------------------------ */
+  var cartList = $('#cartItems');
+  var orderForm = $('#orderForm');
+
+  function currentFee() {
+    var method = orderForm ? orderForm.querySelector('[name="method"]') : null;
+    var area = orderForm ? orderForm.querySelector('[name="area"]') : null;
+    if (!orderForm || !method || method.value !== 'delivery' || !area) { return 0; }
+    return AREA_FEES[area.value] != null ? AREA_FEES[area.value] : 0;
   }
 
-  function closeModal() {
-    orderModal.classList.remove('active');
-    document.body.style.overflow = '';
-    modalSuccess.classList.remove('active');
-    orderForm.style.display = 'block';
-  }
+  function renderCart() {
+    if (!cartList) { return; }
+    var cart = getCart();
 
-  if (orderTrigger) {
-    orderTrigger.addEventListener('click', function (e) {
-      e.preventDefault();
-      openModal();
-    });
-  }
-
-  // All other #order links open the modal too
-  document.querySelectorAll('a[href="#order"]').forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      openModal();
-    });
-  });
-
-  modalOverlay.addEventListener('click', closeModal);
-  modalClose.addEventListener('click', closeModal);
-  successClose.addEventListener('click', closeModal);
-
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && orderModal.classList.contains('active')) {
-      closeModal();
+    if (!cart.length) {
+      cartList.innerHTML =
+        '<div class="cart-empty"><div class="big">🍽️</div>' +
+        '<p>Your cart is empty.</p>' +
+        '<p style="margin-top:14px"><a class="btn btn-primary" href="menu.html">Browse the Menu</a></p></div>';
+    } else {
+      var html = '<ul class="cart-list">';
+      cart.forEach(function (item) {
+        html +=
+          '<li class="cart-item" data-id="' + item.id + '">' +
+            '<img class="cart-item-img" src="images/food/' + item.id + '.webp" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
+            '<div class="cart-item-info">' +
+              '<h4>' + item.name + '</h4>' +
+              '<div class="cart-item-unit">' + pesos(item.price) + ' each</div>' +
+              '<div class="cart-item-sub">' + pesos(item.price * item.qty) + '</div>' +
+            '</div>' +
+            '<div class="qty-controls">' +
+              '<button type="button" class="qty-btn js-dec" aria-label="Decrease quantity">−</button>' +
+              '<span class="qty-val">' + item.qty + '</span>' +
+              '<button type="button" class="qty-btn js-inc" aria-label="Increase quantity">+</button>' +
+            '</div>' +
+            '<button type="button" class="cart-remove js-remove" aria-label="Remove item">×</button>' +
+          '</li>';
+      });
+      html += '</ul>';
+      cartList.innerHTML = html;
     }
-  });
 
-  // Delivery fields show/hide
-  function toggleDeliveryFields() {
-    var isDelivery = deliverySelect.value === 'delivery';
-    deliveryFields.classList.toggle('visible', isDelivery);
-    areaSelect.required = isDelivery;
-    addressInput.required = isDelivery;
-    if (!isDelivery) {
-      areaSelect.value = '';
-    }
-    updateTotal();
+    updateTotals();
   }
 
-  deliverySelect.addEventListener('change', toggleDeliveryFields);
-
-  // Dynamic total
-  function computeTotal() {
-    var plan = planSelect.value;
-    var area = areaSelect.value;
-    var total = PLAN_PRICES[plan] || 0;
-    if (deliverySelect.value === 'delivery') {
-      total += AREA_FEES[area] || 0;
-    }
-    return total;
-  }
-
-  function formatTotal(total) {
-    if (!planSelect.value) return '₱0';
-    var plan = planSelect.value;
-    if (plan === 'bread' || plan === 'custom') {
-      return 'Custom quote';
-    }
-    if (deliverySelect.value === 'delivery' && !areaSelect.value) {
-      return '₱' + total + ' + delivery';
-    }
-    return '₱' + total;
-  }
-
-  function updateTotal() {
-    var total = computeTotal();
-    var display = formatTotal(total);
-    totalAmount.textContent = display;
-    totalInput.value = display;
-  }
-
-  planSelect.addEventListener('change', updateTotal);
-  areaSelect.addEventListener('change', updateTotal);
-
-  // Form submission: Make.com webhook → GHL automation
-  orderForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    timestampInput.value = new Date().toISOString();
-    updateTotal();
-
-    var submitBtn = orderForm.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
-
-    // Send to Make.com → GHL automation
-    var orderData = {
-      name: orderForm.querySelector('[name="name"]').value,
-      phone: formatPhone(orderForm.querySelector('[name="phone"]').value),
-      plan: planSelect.value,
-      days: orderForm.querySelector('[name="days"]').value,
-      option: orderForm.querySelector('[name="option"]').value,
-      delivery: deliverySelect.value,
-      area: areaSelect.value,
-      address: addressInput.value,
-      notes: orderForm.querySelector('[name="notes"]').value,
-      total: totalAmount.textContent,
-      timestamp: timestampInput.value,
-      source: 'Website Order Form'
+  function updateTotals() {
+    var cart = getCart();
+    var subtotal = cart.reduce(function (sum, item) { return sum + item.price * item.qty; }, 0);
+    var fee = currentFee();
+    var els = {
+      subtotal: $('#cartSubtotal'),
+      fee: $('#cartFee'),
+      feeRow: $('#cartFeeRow'),
+      grand: $('#cartGrand')
     };
+    if (els.subtotal) { els.subtotal.textContent = pesos(subtotal); }
+    if (els.fee) { els.fee.textContent = fee === 0 ? 'FREE' : pesos(fee); }
+    if (els.feeRow) { els.feeRow.style.display = (orderForm && orderForm.querySelector('[name="method"]').value === 'delivery') ? 'flex' : 'none'; }
+    if (els.grand) { els.grand.textContent = pesos(subtotal + fee); }
+    var submitBtn = orderForm ? orderForm.querySelector('button[type="submit"]') : null;
+    if (submitBtn) { submitBtn.disabled = cart.length === 0; }
+  }
 
-    fetch(WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    }).then(function (response) {
-      if (response.ok) {
-        orderForm.style.display = 'none';
-        modalSuccess.classList.add('active');
-      } else {
-        alert('Something went wrong. Please try again or message us on Facebook.');
+  if (cartList) {
+    cartList.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) { return; }
+      var row = e.target.closest('.cart-item');
+      if (!row) { return; }
+      var id = row.getAttribute('data-id');
+      var cart = getCart();
+      var item = null;
+      for (var i = 0; i < cart.length; i++) { if (cart[i].id === id) { item = cart[i]; break; } }
+      if (!item) { return; }
+      if (btn.classList.contains('js-inc')) { item.qty += 1; }
+      if (btn.classList.contains('js-dec')) { item.qty -= 1; }
+      if (btn.classList.contains('js-remove') || item.qty <= 0) {
+        cart = cart.filter(function (c) { return c.id !== id; });
       }
-    }).catch(function () {
-      alert('Something went wrong. Please try again or message us on Facebook.');
-    }).finally(function () {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Order';
+      saveCart(cart);
     });
-  });
+    renderCart();
+  }
 
-  // Scroll reveal animation
-  var observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        observer.unobserve(entry.target);
-      }
+  // Delivery / pickup toggle
+  if (orderForm) {
+    var methodSelect = orderForm.querySelector('[name="method"]');
+    var areaSelect = orderForm.querySelector('[name="area"]');
+    var addressInput = orderForm.querySelector('[name="address"]');
+    var deliveryFields = $('#deliveryFields');
+
+    function toggleDeliveryFields() {
+      var isDelivery = methodSelect.value === 'delivery';
+      if (deliveryFields) { deliveryFields.classList.toggle('visible', isDelivery); }
+      if (areaSelect) { areaSelect.required = isDelivery; }
+      if (addressInput) { addressInput.required = isDelivery; }
+      if (!isDelivery && areaSelect) { areaSelect.value = ''; }
+      updateTotals();
+    }
+    if (methodSelect) { methodSelect.addEventListener('change', toggleDeliveryFields); }
+    if (areaSelect) { areaSelect.addEventListener('change', updateTotals); }
+  }
+
+  /* ------------------------------------------------------------------ *
+   *  Checkout: build structured JSON and POST to the GHL webhook
+   * ------------------------------------------------------------------ */
+  function buildOrderPayload() {
+    var cart = getCart();
+    var subtotal = cart.reduce(function (sum, item) { return sum + item.price * item.qty; }, 0);
+    var fee = currentFee();
+    var get = function (name) {
+      var el = orderForm.querySelector('[name="' + name + '"]');
+      return el ? el.value.trim() : '';
+    };
+    var items = cart.map(function (item) {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        qty: item.qty,
+        subtotal: item.price * item.qty
+      };
     });
-  }, observerOptions);
+    var customer = {
+      name: get('name'),
+      phone: formatPhone(get('phone')),
+      method: get('method'),
+      area: get('area'),
+      address: get('address'),
+      notes: get('notes')
+    };
+    return {
+      orderId: 'DH-' + Date.now().toString(36).toUpperCase(),
+      timestamp: new Date().toISOString(),
+      source: 'Diet Hub Website',
+      currency: 'PHP',
+      customer: customer,
+      items: items,
+      itemCount: cart.reduce(function (sum, item) { return sum + item.qty; }, 0),
+      itemsSummary: items.map(function (i) { return i.qty + '× ' + i.name; }).join(', '),
+      subtotal: subtotal,
+      deliveryFee: fee,
+      total: subtotal + fee,
+      // Flat fields kept for the existing Make → GHL field mapping
+      name: customer.name,
+      phone: customer.phone,
+      delivery: customer.method,
+      area: customer.area,
+      address: customer.address,
+      notes: customer.notes,
+      totalDisplay: pesos(subtotal + fee)
+    };
+  }
 
-  document.querySelectorAll('.menu-card,.step,.pricing-card,.review-card,.about-card,.special-card,.bread-card').forEach(function (el) {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-  });
+  function showResult(kind, html) {
+    var box = $('#orderResult');
+    if (!box) { return; }
+    box.className = 'order-result show ' + kind;
+    box.innerHTML = html;
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 
-  // Smooth scroll for in-page anchors.
-  // Links that open the modal (href="#order") already called preventDefault,
-  // so skip them here to avoid scrolling the page behind the modal.
-  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
-    anchor.addEventListener('click', function (e) {
-      if (e.defaultPrevented) return;
-      var href = this.getAttribute('href');
-      if (href === '#') return;
+  // Fallback when the webhook cannot be reached: keep the order locally as JSON
+  // (downloadable file + localStorage queue) and flag GHL for later configuration.
+  function mockSubmit(payload) {
+    var queue = [];
+    try { queue = JSON.parse(localStorage.getItem(MOCK_KEY)) || []; } catch (e) { queue = []; }
+    queue.push(payload);
+    try { localStorage.setItem(MOCK_KEY, JSON.stringify(queue)); } catch (e) { /* storage full */ }
+
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = payload.orderId.toLowerCase() + '-order.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showResult('mock',
+      '<b>Order saved locally (GHL offline).</b><br>' +
+      'We could not reach the ordering service right now, so your order <b>' + payload.orderId + '</b> ' +
+      'was saved as a JSON file and queued on this device. Please send it to us on ' +
+      '<a href="https://m.me/diethub.ph" target="_blank" rel="noopener" style="text-decoration:underline">Messenger</a> so we can confirm. ' +
+      '<i>(Webhook flagged for later configuration.)</i>');
+  }
+
+  if (orderForm) {
+    orderForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      var target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var cart = getCart();
+      if (!cart.length) {
+        showResult('error', 'Your cart is empty. Please add items from the <a href="menu.html" style="text-decoration:underline">menu</a> first.');
+        return;
       }
+
+      var payload = buildOrderPayload();
+      var submitBtn = orderForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      var timedOut = false;
+      var timer = setTimeout(function () { timedOut = true; }, WEBHOOK_TIMEOUT_MS);
+
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (response) {
+        clearTimeout(timer);
+        if (timedOut) { throw new Error('timeout'); }
+        if (response.ok) {
+          showResult('success',
+            '<b>Order received — thank you, ' + payload.customer.name.split(' ')[0] + '!</b><br>' +
+            'Order <b>' + payload.orderId + '</b> (' + payload.totalDisplay + ') was sent successfully. ' +
+            'We\'ll confirm your slot shortly — keep an eye on your phone or Messenger.');
+          localStorage.removeItem(CART_KEY);
+          updateCartBadges();
+          renderCart();
+          orderForm.reset();
+          if ($('#deliveryFields')) { $('#deliveryFields').classList.remove('visible'); }
+        } else {
+          showResult('error',
+            '<b>Order could not be sent (' + response.status + ').</b><br>' +
+            'Please try again in a moment, or message us directly on ' +
+            '<a href="https://m.me/diethub.ph" target="_blank" rel="noopener" style="text-decoration:underline">Messenger</a>.');
+        }
+      }).catch(function () {
+        clearTimeout(timer);
+        mockSubmit(payload);
+        localStorage.removeItem(CART_KEY);
+        updateCartBadges();
+        renderCart();
+        orderForm.reset();
+        if ($('#deliveryFields')) { $('#deliveryFields').classList.remove('visible'); }
+      }).then(function () {
+        submitBtn.disabled = getCart().length === 0;
+        submitBtn.textContent = 'Place Order';
+      });
     });
-  });
+  }
+
+  // Initial paint
+  updateCartBadges();
 })();
