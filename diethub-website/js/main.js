@@ -379,9 +379,10 @@
     } else {
       var html = '<ul class="cart-list">';
       cart.forEach(function (item) {
+        var mi = menuItemById(item.id);
         html +=
           '<li class="cart-item" data-id="' + item.id + '">' +
-            '<img class="cart-item-img" src="images/food/' + item.id + '.webp" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
+            '<img class="cart-item-img" src="' + (mi ? mi.img : 'images/food/' + item.id + '.webp') + '" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
             '<div class="cart-item-info">' +
               '<h4>' + item.name + '</h4>' +
               '<div class="cart-item-unit">' + pesos(item.price) + ' each</div>' +
@@ -543,16 +544,16 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';
 
-      var timedOut = false;
-      var timer = setTimeout(function () { timedOut = true; }, WEBHOOK_TIMEOUT_MS);
+      var controller = new AbortController();
+      var timer = setTimeout(function () { controller.abort(); }, WEBHOOK_TIMEOUT_MS);
 
       fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal
       }).then(function (response) {
         clearTimeout(timer);
-        if (timedOut) { throw new Error('timeout'); }
         if (response.ok) {
           showResult('success',
             '<b>Order received — thank you, ' + payload.name.split(' ')[0] + '!</b><br>' +
@@ -562,6 +563,7 @@
           updateCartBadges();
           renderCart();
           orderForm.reset();
+          updateTotals();
           if ($('#deliveryFields')) { $('#deliveryFields').classList.remove('visible'); }
         } else {
           showResult('error',
@@ -576,6 +578,7 @@
         updateCartBadges();
         renderCart();
         orderForm.reset();
+        updateTotals();
         if ($('#deliveryFields')) { $('#deliveryFields').classList.remove('visible'); }
       }).then(function () {
         submitBtn.disabled = getCart().length === 0;
