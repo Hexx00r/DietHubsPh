@@ -13,16 +13,14 @@
   var MOCK_KEY = 'diethub_mock_orders';
   var AREA_FEES = { poblacion: 0, ichon: 30, ibarra: 20, libog: 20, other: 15 };
 
-  // Single source of truth for the menu. Prices for the re-added dishes are
-  // the pre-simplification values from git history — OWNER HAS NOT RE-CONFIRMED
-  // THEM; verify before treating as final. Every menu card, cart entry, label
+  // Single source of truth for the menu. Every menu card, cart entry, label
   // and total is derived from this array.
   var MENU_ITEMS = [
     // --- Meal Prep ---
     {
       id: 'grilled-protein',
       name: 'Grilled Protein Meal Prep',
-      price: 160,
+      price: 250,
       category: 'meals',
       desc: 'Lean grilled protein, premium brown rice and seasonal vegetables.',
       img: 'images/food/grilled-protein.webp',
@@ -31,7 +29,7 @@
     {
       id: 'karekare',
       name: 'Kare-Kare Prep',
-      price: 165,
+      price: 250,
       category: 'meals',
       desc: 'Savory peanut stew with vegetables and premium brown rice.',
       img: 'images/food/karekare.webp'
@@ -39,7 +37,7 @@
     {
       id: 'fried-chicken-bento',
       name: 'Chicken Bento',
-      price: 140,
+      price: 250,
       category: 'meals',
       desc: 'Fried chicken with buttered vegetables and steamed rice.',
       img: 'images/food/fried-chicken-bento.webp'
@@ -47,7 +45,7 @@
     {
       id: 'caesar-salad',
       name: 'Caesar Salad with Chicken',
-      price: 140,
+      price: 250,
       category: 'meals',
       desc: 'Crisp greens, grilled chicken and light Caesar dressing.',
       img: 'images/food/caesar-salad.webp'
@@ -65,7 +63,7 @@
     {
       id: 'kai-thai-crab-fried-rice',
       name: 'Fried Rice with Siomai',
-      price: 130,
+      price: 255,
       category: 'pasta',
       desc: 'Wok-tossed fried rice served with siomai.',
       img: 'images/food/siomai-rice.png'
@@ -91,7 +89,7 @@
     {
       id: 'chicken-shrimp-combo',
       name: 'Chicken & Shrimp Combo',
-      price: 220,
+      price: 250,
       category: 'platters',
       desc: 'Grilled chicken and shrimp with brown rice and egg.',
       img: 'images/food/chicken-shrimp-combo.webp'
@@ -99,7 +97,7 @@
     {
       id: 'bacon-chicken-fries',
       name: 'Bacon Chicken Cheese Fries',
-      price: 190,
+      price: 250,
       category: 'platters',
       desc: 'Loaded fries topped with bacon-wrapped chicken and melted cheese.',
       img: 'images/food/bacon-chicken-fries.webp'
@@ -107,7 +105,7 @@
     {
       id: 'shrimp-mash',
       name: 'Garlic Shrimp over Mash',
-      price: 160,
+      price: 250,
       category: 'platters',
       desc: 'Garlic butter shrimp piled on creamy mashed potato.',
       img: 'images/food/shrimp-mash.webp'
