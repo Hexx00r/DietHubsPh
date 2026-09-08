@@ -50,7 +50,7 @@
 .add-btn.added{background:var(--gold);color:var(--forest)}
 
 /* ---------- Promo banners ---------- */
-.promo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:24px}
 .promo-banner{position:relative;border-radius:var(--radius);overflow:hidden;min-height:300px;display:flex;align-items:flex-end;box-shadow:var(--shadow)}
 .promo-banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .promo-banner::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 25%,rgba(18,56,44,.88))}
@@ -103,3 +103,35 @@
 .contact-card .icon{font-size:2.2rem;margin-bottom:12px}
 .contact-card h4{color:var(--forest);margin-bottom:8px;font-size:1.15rem}
 .contact-card p{color:var(--text-muted);font-size:.92rem;margin-bottom:16px}
+
+/* ---------- Reviews / testimonials (menu page) ---------- */
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.review-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px;display:flex;flex-direction:column;gap:14px;border:1px solid rgba(0,0,0,.04);transition:var(--transition)}
+.review-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.review-stars{color:var(--gold);font-size:1.1rem;letter-spacing:2px}
+.review-stars .star-off{color:var(--cream-dark)}
+.review-text{color:var(--text-light);font-size:.95rem;font-style:italic;flex:1;margin:0}
+.review-author{display:flex;flex-direction:column;gap:2px}
+.review-name{font-family:'Playfair Display',serif;font-weight:600;color:var(--forest)}
+.review-meta{font-size:.82rem;color:var(--text-muted)}
+@media(max-width:480px){.review-card{padding:22px 20px}}
+
+/* ---------- Reviews carousel (menu page, mobile-first) ---------- */
+.reviews-carousel{position:relative}
+.reviews-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:4px 2px 20px;will-change:scroll-position}
+.reviews-track::-webkit-scrollbar{display:none}
+.review-slide{flex:0 0 min(82%,340px);scroll-snap-align:center;padding:0;gap:0;overflow:hidden}
+.review-media{position:relative;aspect-ratio:4/3;background:var(--cream-dark);overflow:hidden}
+.review-media img{width:100%;height:100%;object-fit:cover;display:block}
+.review-body{padding:20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.review-slide .review-text{font-size:clamp(.92rem,2.6vw,.95rem)}
+.reviews-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px}
+.reviews-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--cream-dark);background:var(--white);color:var(--forest);font-size:1.25rem;line-height:1;cursor:pointer;transition:var(--transition);display:flex;align-items:center;justify-content:center;padding:0}
+.reviews-btn:hover{border-color:var(--forest);background:var(--forest);color:var(--white)}
+.reviews-dots{display:flex;gap:8px}
+.reviews-dot{width:8px;height:8px;border-radius:50%;border:none;background:var(--cream-dark);cursor:pointer;padding:0;transition:var(--transition)}
+.reviews-dot.active{background:var(--gold);transform:scale(1.25)}
+@media(max-width:480px){.review-body{padding:16px 14px}.review-slide{flex-basis:min(84%,320px)}}
+
+/* ---------- Menu item rating badge ---------- */
+.menu-item-rating{position:absolute;bottom:12px;left:12px;padding:4px 10px;background:rgba(27,77,62,.92);color:var(--gold-light);border-radius:50px;font-size:.72rem;font-weight:700;letter-spacing:.5px;display:inline-flex;align-items:center;gap:4px}

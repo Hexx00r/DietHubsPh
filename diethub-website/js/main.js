@@ -13,6 +13,125 @@
   var MOCK_KEY = 'diethub_mock_orders';
   var AREA_FEES = { poblacion: 0, ichon: 30, ibarra: 20, libog: 20, other: 15 };
 
+  // Single source of truth for the menu. Prices for the re-added dishes are
+  // the pre-simplification values from git history — OWNER HAS NOT RE-CONFIRMED
+  // THEM; verify before treating as final. Every menu card, cart entry, label
+  // and total is derived from this array.
+  var MENU_ITEMS = [
+    // --- Meal Prep ---
+    {
+      id: 'grilled-protein',
+      name: 'Grilled Protein Meal Prep',
+      price: 160,
+      category: 'meals',
+      desc: 'Lean grilled protein, premium brown rice and seasonal vegetables.',
+      img: 'images/food/grilled-protein.webp',
+      tag: 'Best Seller'
+    },
+    {
+      id: 'karekare',
+      name: 'Kare-Kare Prep',
+      price: 165,
+      category: 'meals',
+      desc: 'Savory peanut stew with vegetables and premium brown rice.',
+      img: 'images/food/karekare.webp'
+    },
+    {
+      id: 'fried-chicken-bento',
+      name: 'Chicken Bento',
+      price: 140,
+      category: 'meals',
+      desc: 'Fried chicken with buttered vegetables and steamed rice.',
+      img: 'images/food/fried-chicken-bento.webp'
+    },
+    {
+      id: 'caesar-salad',
+      name: 'Caesar Salad with Chicken',
+      price: 140,
+      category: 'meals',
+      desc: 'Crisp greens, grilled chicken and light Caesar dressing.',
+      img: 'images/food/caesar-salad.webp'
+    },
+    // --- Pasta & Rice ---
+    {
+      id: 'salmon-pesto-pasta',
+      name: 'The Salmon Pesto Pasta',
+      price: 280,
+      category: 'pasta',
+      desc: 'Flaked salmon tossed in fresh basil pesto — a house favorite.',
+      img: 'images/food/salmon-pesto-pasta.webp',
+      tag: 'Favorite'
+    },
+    {
+      id: 'kai-thai-crab-fried-rice',
+      name: 'Fried Rice with Siomai',
+      price: 130,
+      category: 'pasta',
+      desc: 'Wok-tossed fried rice served with siomai.',
+      img: 'images/food/siomai-rice.png'
+    },
+    {
+      id: 'kai-thai-crab-fried',
+      name: 'Kai Thai Crab Fried Rice',
+      price: 270,
+      category: 'pasta',
+      desc: 'Wok-tossed fried rice with crab and Thai aromatics.',
+      img: 'images/food/Kai-thai-crab-fried.webp'
+    },
+    // --- Platters & Specials ---
+    {
+      id: 'seafood-boil',
+      name: 'Seafood Boil Platter',
+      price: 550,
+      category: 'platters',
+      desc: 'Shrimp, squid and more in rich Cajun butter sauce. Good for 2–3.',
+      img: 'images/food/seafood-boil.webp',
+      tag: 'For Sharing'
+    },
+    {
+      id: 'chicken-shrimp-combo',
+      name: 'Chicken & Shrimp Combo',
+      price: 220,
+      category: 'platters',
+      desc: 'Grilled chicken and shrimp with brown rice and egg.',
+      img: 'images/food/chicken-shrimp-combo.webp'
+    },
+    {
+      id: 'bacon-chicken-fries',
+      name: 'Bacon Chicken Cheese Fries',
+      price: 190,
+      category: 'platters',
+      desc: 'Loaded fries topped with bacon-wrapped chicken and melted cheese.',
+      img: 'images/food/bacon-chicken-fries.webp'
+    },
+    {
+      id: 'shrimp-mash',
+      name: 'Garlic Shrimp over Mash',
+      price: 160,
+      category: 'platters',
+      desc: 'Garlic butter shrimp piled on creamy mashed potato.',
+      img: 'images/food/shrimp-mash.webp'
+    },
+    // --- Bread & Sweets ---
+    {
+      id: 'chocolate-banana-bread',
+      name: 'Chocolate Banana Bread',
+      price: 330,
+      category: 'bread',
+      desc: 'Moist whole-wheat banana bread loaded with chocolate. Baked fresh.',
+      img: 'images/food/chocolate-brownies.webp',
+      tag: 'Baked Fresh',
+      imgClass: 'menu-item-img-sm'
+    }
+  ];
+
+  function menuItemById(id) {
+    for (var i = 0; i < MENU_ITEMS.length; i++) {
+      if (MENU_ITEMS[i].id === id) { return MENU_ITEMS[i]; }
+    }
+    return null;
+  }
+
   /* ------------------------------------------------------------------ *
    *  Helpers
    * ------------------------------------------------------------------ */
@@ -97,6 +216,39 @@
   })();
 
   /* ------------------------------------------------------------------ *
+   *  Menu rendering: menu page grids are built from MENU_ITEMS so the
+   *  cards, prices and buttons always match the single data source.
+   *  Must run before initReveal so the cards get scroll animations.
+   * ------------------------------------------------------------------ */
+  function renderMenu() {
+    $$('.js-menu-grid').forEach(function (grid) {
+      var cat = grid.getAttribute('data-category');
+      var html = '';
+      MENU_ITEMS.forEach(function (item) {
+        if (cat !== 'all' && item.category !== cat) { return; }
+        html +=
+          '<article class="menu-item reveal">' +
+            '<div class="menu-item-img' + (item.imgClass ? ' ' + item.imgClass : '') + '">' +
+              (item.tag ? '<span class="menu-item-tag">' + item.tag + '</span>' : '') +
+              '<span class="menu-item-rating" aria-label="Rated 5 out of 5 by customers">★ 5.0</span>' +
+              '<img src="' + item.img + '" alt="' + item.name + '" width="800" height="600" loading="lazy" decoding="async">' +
+            '</div>' +
+            '<div class="menu-item-body">' +
+              '<h4>' + item.name + '</h4>' +
+              '<p>' + item.desc + '</p>' +
+              '<div class="menu-item-foot">' +
+                '<span class="menu-item-price">' + pesos(item.price) + '</span>' +
+                '<button type="button" class="add-btn js-add" data-id="' + item.id + '" data-name="' + item.name + '" data-price="' + item.price + '">Add to Order</button>' +
+              '</div>' +
+            '</div>' +
+          '</article>';
+      });
+      grid.innerHTML = html;
+    });
+  }
+  renderMenu();
+
+  /* ------------------------------------------------------------------ *
    *  Reveal-on-scroll animations
    * ------------------------------------------------------------------ */
   (function initReveal() {
@@ -172,6 +324,9 @@
     }
     if (existing) {
       existing.qty += 1;
+      // Refresh label/price from the current data source
+      existing.name = item.name;
+      existing.price = item.price;
     } else {
       cart.push({ id: item.id, name: item.name, price: item.price, qty: 1 });
     }
@@ -179,11 +334,15 @@
     toast(item.name + ' added to your order');
   }
 
-  // Wire every "Add to Order" button on the page
+  // Wire every "Add to Order" button on the page. Names/prices are always
+  // resolved from MENU_ITEMS (the single data source) so the cart can never
+  // carry stale labels, even if a button's data-* attributes are outdated.
   $$('.js-add').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      addToCart({
-        id: btn.getAttribute('data-id'),
+      var id = btn.getAttribute('data-id');
+      var item = menuItemById(id);
+      addToCart(item ? { id: item.id, name: item.name, price: item.price } : {
+        id: id,
         name: btn.getAttribute('data-name'),
         price: parseInt(btn.getAttribute('data-price'), 10) || 0
       });
@@ -304,7 +463,8 @@
   }
 
   /* ------------------------------------------------------------------ *
-   *  Checkout: build structured JSON and POST to the GHL webhook
+   *  Checkout: build the simplified order JSON and POST it to the
+   *  Make webhook feeding GoHighLevel
    * ------------------------------------------------------------------ */
   function buildOrderPayload() {
     var cart = getCart();
@@ -314,43 +474,27 @@
       var el = orderForm.querySelector('[name="' + name + '"]');
       return el ? el.value.trim() : '';
     };
-    var items = cart.map(function (item) {
-      return {
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        qty: item.qty,
-        subtotal: item.price * item.qty
-      };
-    });
-    var customer = {
+    var method = get('method');
+    var notes = get('notes');
+    // The simplified payload has no area/address fields — keep delivery
+    // details by appending them to the notes sent to GHL.
+    if (method === 'delivery') {
+      var details = [];
+      if (get('area')) { details.push('Delivery area: ' + get('area')); }
+      if (get('address')) { details.push('Address: ' + get('address')); }
+      if (details.length) { notes = notes ? notes + '\n' + details.join('\n') : details.join('\n'); }
+    }
+    return {
       name: get('name'),
       phone: formatPhone(get('phone')),
-      method: get('method'),
-      area: get('area'),
-      address: get('address'),
-      notes: get('notes')
-    };
-    return {
-      orderId: 'DH-' + Date.now().toString(36).toUpperCase(),
-      timestamp: new Date().toISOString(),
-      source: 'Diet Hub Website',
-      currency: 'PHP',
-      customer: customer,
-      items: items,
-      itemCount: cart.reduce(function (sum, item) { return sum + item.qty; }, 0),
-      itemsSummary: items.map(function (i) { return i.qty + '× ' + i.name; }).join(', '),
-      subtotal: subtotal,
-      deliveryFee: fee,
+      deliveryMethod: method,
+      notes: notes,
+      cartItems: cart.map(function (item) {
+        return { name: item.name, qty: item.qty, price: item.price };
+      }),
       total: subtotal + fee,
-      // Flat fields kept for the existing Make → GHL field mapping
-      name: customer.name,
-      phone: customer.phone,
-      delivery: customer.method,
-      area: customer.area,
-      address: customer.address,
-      notes: customer.notes,
-      totalDisplay: pesos(subtotal + fee)
+      timestamp: new Date().toISOString(),
+      source: 'diethub.kimi.page'
     };
   }
 
@@ -374,7 +518,7 @@
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = payload.orderId.toLowerCase() + '-order.json';
+    a.download = 'diethub-order-' + Date.now().toString(36) + '.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -382,10 +526,9 @@
 
     showResult('mock',
       '<b>Order saved locally (GHL offline).</b><br>' +
-      'We could not reach the ordering service right now, so your order <b>' + payload.orderId + '</b> ' +
-      'was saved as a JSON file and queued on this device. Please send it to us on ' +
-      '<a href="https://m.me/diethub.ph" target="_blank" rel="noopener" style="text-decoration:underline">Messenger</a> so we can confirm. ' +
-      '<i>(Webhook flagged for later configuration.)</i>');
+      'We could not reach the ordering service right now, so your order for <b>' + payload.name + '</b> ' +
+      '(' + pesos(payload.total) + ') was saved as a JSON file and queued on this device. Please send it to us on ' +
+      '<a href="https://m.me/diethub.ph" target="_blank" rel="noopener" style="text-decoration:underline">Messenger</a> so we can confirm.');
   }
 
   if (orderForm) {
@@ -414,8 +557,8 @@
         if (timedOut) { throw new Error('timeout'); }
         if (response.ok) {
           showResult('success',
-            '<b>Order received — thank you, ' + payload.customer.name.split(' ')[0] + '!</b><br>' +
-            'Order <b>' + payload.orderId + '</b> (' + payload.totalDisplay + ') was sent successfully. ' +
+            '<b>Order received — thank you, ' + payload.name.split(' ')[0] + '!</b><br>' +
+            'Your order (' + pesos(payload.total) + ') was sent successfully. ' +
             'We\'ll confirm your slot shortly — keep an eye on your phone or Messenger.');
           localStorage.removeItem(CART_KEY);
           updateCartBadges();

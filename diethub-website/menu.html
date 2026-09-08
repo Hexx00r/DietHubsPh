@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Menu — Diet Hub · Healthy Meal Prep Maasin</title>
-<meta name="description" content="Browse the Diet Hub menu: meal prep bowls, pasta and rice dishes, sharing platters, and whole wheat banana bread. Prices in Philippine pesos. Add to your order online.">
+<title>Menu — Diet Hub Ph · Healthy Meal Prep Maasin</title>
+<meta name="description" content="Browse the Diet Hub Ph menu: the owner's selection of pasta, rice, platters and fresh-baked treats. Prices in Philippine pesos. Add to your order online.">
 <link rel="icon" href="images/logo.png" type="image/png">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-400.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/inter-500.woff2">
@@ -14,14 +14,15 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/playfairdisplay-700.woff2">
 <link rel="stylesheet" href="css/style.min.css">
 <script src="js/main.min.js" defer></script>
+<script src="js/reviews.js" defer></script>
 </head>
 <body>
 
 <nav class="navbar" id="navbar">
   <div class="container">
     <a href="index.html" class="logo">
-      <img src="images/logo.png" alt="Diet Hub logo" width="40" height="40">
-      <span class="logo-text">Diet Hub</span>
+      <img src="images/logo.png" alt="Diet Hub Ph logo" width="40" height="40">
+      <span class="logo-text">Diet Hub Ph</span>
     </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
     <ul class="nav-menu" id="navMenu">
@@ -50,283 +51,20 @@
       <button type="button" class="tab-btn" data-tab="bread">Bread &amp; Sweets</button>
     </div>
 
-    <!-- MEAL PREP -->
     <div class="tab-content active" id="meals">
-      <div class="menu-grid">
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <span class="menu-item-tag">Best Seller</span>
-            <img src="images/food/chicken-rice-bowl.webp" alt="Chicken rice bowl with brown rice and veggies" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Chicken Rice Bowl</h4>
-            <p>Grilled chicken over premium brown rice with buttered vegetables.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱150</span>
-              <button type="button" class="add-btn js-add" data-id="chicken-rice-bowl" data-name="Chicken Rice Bowl" data-price="150">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/grilled-protein.webp" alt="Grilled protein meal prep with rice and vegetables" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Grilled Protein Meal Prep</h4>
-            <p>Lean grilled protein, premium brown rice and seasonal vegetables.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱160</span>
-              <button type="button" class="add-btn js-add" data-id="grilled-protein" data-name="Grilled Protein Meal Prep" data-price="160">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/lemon-fish.webp" alt="Baked lemon butter fish meal prep" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Lemon Butter Fish</h4>
-            <p>Baked fish fillet in lemon butter sauce with brown rice and greens.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱160</span>
-              <button type="button" class="add-btn js-add" data-id="lemon-fish" data-name="Lemon Butter Fish" data-price="160">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/karekare.webp" alt="Kare-kare meal prep with brown rice" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Kare-Kare Meal Prep</h4>
-            <p>Savory peanut stew with vegetables and premium brown rice.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱165</span>
-              <button type="button" class="add-btn js-add" data-id="karekare" data-name="Kare-Kare Meal Prep" data-price="165">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/caesar-salad.webp" alt="Caesar salad with grilled chicken" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Caesar Salad with Chicken</h4>
-            <p>Crisp greens, grilled chicken and light Caesar dressing.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱140</span>
-              <button type="button" class="add-btn js-add" data-id="caesar-salad" data-name="Caesar Salad with Chicken" data-price="140">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/fried-chicken-bento.webp" alt="Fried chicken bento with buttered vegetables" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Chicken Bento</h4>
-            <p>Fried chicken with buttered vegetables and steamed rice.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱140</span>
-              <button type="button" class="add-btn js-add" data-id="fried-chicken-bento" data-name="Chicken Bento" data-price="140">Add to Order</button>
-            </div>
-          </div>
-        </article>
-      </div>
+      <div class="menu-grid js-menu-grid" data-category="meals"></div>
     </div>
-
-    <!-- PASTA & RICE -->
     <div class="tab-content" id="pasta">
-      <div class="menu-grid">
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <span class="menu-item-tag">Favorite</span>
-            <img src="images/food/salmon-pesto-pasta.webp" alt="Salmon pesto pasta" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Salmon Pesto Pasta</h4>
-            <p>Flaked salmon tossed in fresh basil pesto.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱180</span>
-              <button type="button" class="add-btn js-add" data-id="salmon-pesto-pasta" data-name="Salmon Pesto Pasta" data-price="180">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/pesto-pasta.webp" alt="Pesto pasta" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Pesto Pasta with Chicken</h4>
-            <p>Classic basil pesto pasta with grilled chicken.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱150</span>
-              <button type="button" class="add-btn js-add" data-id="pesto-pasta" data-name="Pesto Pasta with Chicken" data-price="150">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/stir-fry.webp" alt="Stir fry with brown rice" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Stir Fry with Brown Rice</h4>
-            <p>Wok-tossed vegetables and protein over premium brown rice.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱145</span>
-              <button type="button" class="add-btn js-add" data-id="stir-fry" data-name="Stir Fry with Brown Rice" data-price="145">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/fried-rice-siomai.webp" alt="Fried rice with siomai" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Fried Rice with Siomai</h4>
-            <p>Savory garlic fried rice served with pork siomai.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱130</span>
-              <button type="button" class="add-btn js-add" data-id="fried-rice-siomai" data-name="Fried Rice with Siomai" data-price="130">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/chaofan-siomai.webp" alt="Chao fan with siomai" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Chao Fan with Siomai</h4>
-            <p>Garlic chao fan with siomai on the side — a merienda classic.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱130</span>
-              <button type="button" class="add-btn js-add" data-id="chaofan-siomai" data-name="Chao Fan with Siomai" data-price="130">Add to Order</button>
-            </div>
-          </div>
-        </article>
-      </div>
+      <div class="menu-grid js-menu-grid" data-category="pasta"></div>
     </div>
-
-    <!-- PLATTERS & SPECIALS -->
     <div class="tab-content" id="platters">
-      <div class="menu-grid">
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <span class="menu-item-tag">For Sharing</span>
-            <img src="images/food/seafood-boil.webp" alt="Seafood boil platter with shrimp and squid" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Seafood Boil Platter</h4>
-            <p>Shrimp, squid and more in rich Cajun butter sauce. Good for 2–3.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱450</span>
-              <button type="button" class="add-btn js-add" data-id="seafood-boil" data-name="Seafood Boil Platter" data-price="450">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/surf-turf.webp" alt="Surf and turf platter" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Surf &amp; Turf Platter</h4>
-            <p>Grilled beef and garlic shrimp with sides. Good for 2–3.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱420</span>
-              <button type="button" class="add-btn js-add" data-id="surf-turf" data-name="Surf & Turf Platter" data-price="420">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/chicken-shrimp-combo.webp" alt="Chicken and shrimp combo with rice and egg" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Chicken &amp; Shrimp Combo</h4>
-            <p>Grilled chicken and shrimp with brown rice and egg.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱220</span>
-              <button type="button" class="add-btn js-add" data-id="chicken-shrimp-combo" data-name="Chicken & Shrimp Combo" data-price="220">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/bacon-chicken-fries.webp" alt="Bacon chicken cheese fries" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Bacon Chicken Cheese Fries</h4>
-            <p>Loaded fries topped with bacon-wrapped chicken and melted cheese.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱190</span>
-              <button type="button" class="add-btn js-add" data-id="bacon-chicken-fries" data-name="Bacon Chicken Cheese Fries" data-price="190">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/mashed-potato-bowl.webp" alt="Loaded mashed potato bowl" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Loaded Mash Bowl</h4>
-            <p>Creamy mashed potato loaded with toppings of the day.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱150</span>
-              <button type="button" class="add-btn js-add" data-id="mashed-potato-bowl" data-name="Loaded Mash Bowl" data-price="150">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/shrimp-mash.webp" alt="Garlic shrimp over mashed potato" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Garlic Shrimp over Mash</h4>
-            <p>Garlic butter shrimp piled on creamy mashed potato.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱160</span>
-              <button type="button" class="add-btn js-add" data-id="shrimp-mash" data-name="Garlic Shrimp over Mash" data-price="160">Add to Order</button>
-            </div>
-          </div>
-        </article>
-      </div>
+      <div class="menu-grid js-menu-grid" data-category="platters"></div>
     </div>
-
-    <!-- BREAD & SWEETS -->
     <div class="tab-content" id="bread">
-      <div class="menu-grid">
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <span class="menu-item-tag">Baked Fresh</span>
-            <img src="images/food/banana-poster.webp" alt="Whole wheat banana bread" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Whole Wheat Banana Bread — Whole Loaf</h4>
-            <p>Moist classic banana bread. Available Mon · Tue · Thu · Fri.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱300</span>
-              <button type="button" class="add-btn js-add" data-id="banana-bread" data-name="Whole Wheat Banana Bread (Whole Loaf)" data-price="300">Add to Order</button>
-            </div>
-          </div>
-        </article>
-        <article class="menu-item reveal">
-          <div class="menu-item-img">
-            <img src="images/food/chocolate-brownies.webp" alt="Whole wheat chocolate brownies" width="800" height="600" loading="lazy" decoding="async">
-          </div>
-          <div class="menu-item-body">
-            <h4>Chocolate Brownies</h4>
-            <p>Fudgy whole-wheat chocolate brownies — the guilt-free kind.</p>
-            <div class="menu-item-foot">
-              <span class="menu-item-price">₱120</span>
-              <button type="button" class="add-btn js-add" data-id="chocolate-brownies" data-name="Chocolate Brownies" data-price="120">Add to Order</button>
-            </div>
-          </div>
-        </article>
-      </div>
+      <div class="menu-grid js-menu-grid" data-category="bread"></div>
     </div>
 
     <div class="menu-note reveal">
-      <b>Weekly meal plans:</b> 1-Day Trial ₱150 · 3-Day Plan ₱420 · 6-Day Plan ₱780 — free delivery within Maasin on plans.
       Have allergies or dietary requests? Leave a note when you order and we'll do our best to accommodate.
     </div>
 
@@ -336,11 +74,97 @@
   </div>
 </section>
 
+<!-- REVIEWS -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Reviews</span>
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-desc">Real feedback from Diet Hub Ph regulars in Maasin and beyond.</p>
+    </div>
+    <div class="reviews-carousel js-reviews-carousel">
+      <div class="reviews-track js-reviews-track">
+        <article class="review-card review-slide">
+          <div class="review-media"><img src="images/food/review1-card.webp" alt="Customer photo of a finished Diet Hub meal container" width="640" height="480" loading="lazy" decoding="async"></div>
+          <div class="review-body">
+            <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="review-text">&ldquo;Nhurot gyud hahaha&rdquo; &mdash; finished it all, down to the last grain.</p>
+            <div class="review-author">
+              <span class="review-name">DietHub Customer</span>
+              <span class="review-meta">via Facebook</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card review-slide">
+          <div class="review-media"><img src="images/food/review2-card.webp" alt="Customer enjoying a Diet Hub meal in her car" width="640" height="480" loading="lazy" decoding="async"></div>
+          <div class="review-body">
+            <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="review-text">Customer photo shared in our Facebook &ldquo;Customer Feedbacks&rdquo;.</p>
+            <div class="review-author">
+              <span class="review-name">DietHub Customer</span>
+              <span class="review-meta">via Facebook</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card review-slide">
+          <div class="review-media"><img src="images/food/review3-card.webp" alt="Facebook comments reading kalamiiii and bitin huhuhu" width="640" height="480" loading="lazy" decoding="async"></div>
+          <div class="review-body">
+            <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="review-text">&ldquo;Kalamiiii&hellip; bitin huhuhu!&rdquo; &mdash; so delicious&hellip; left wanting more.</p>
+            <div class="review-author">
+              <span class="review-name">DietHub Customer</span>
+              <span class="review-meta">via Facebook</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card review-slide">
+          <div class="review-media"><img src="images/food/review4-card.webp" alt="Customer photo of a Diet Hub tortilla wrap" width="640" height="480" loading="lazy" decoding="async"></div>
+          <div class="review-body">
+            <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="review-text">&ldquo;Arang lamia sa imo tortilla 😭😭😭 Kalami ui!&rdquo; &mdash; your tortilla is so good!</p>
+            <div class="review-author">
+              <span class="review-name">@Jessan Kuizon</span>
+              <span class="review-meta">via Facebook</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card review-slide">
+          <div class="review-media"><img src="images/food/review5-card.webp" alt="Customer photo of a finished Diet Hub meal with sauce" width="640" height="480" loading="lazy" decoding="async"></div>
+          <div class="review-body">
+            <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="review-text">&ldquo;Daiii super sulit jud ky with breast chicken on top na. Authentic pd mga spices. Ang lasa pasar sad. Hurot oy hahaha.&rdquo;</p>
+            <div class="review-author">
+              <span class="review-name">DietHub Customer</span>
+              <span class="review-meta">via Facebook</span>
+            </div>
+          </div>
+        </article>
+        <article class="review-card review-slide">
+          <div class="review-media"><img src="images/food/review6-card.webp" alt="Customer photo of a stuffed pepper Diet Hub meal" width="640" height="480" loading="lazy" decoding="async"></div>
+          <div class="review-body">
+            <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <p class="review-text">&ldquo;Daiii kalami hahaha&rdquo; &mdash; so delicious!</p>
+            <div class="review-author">
+              <span class="review-name">DietHub Customer</span>
+              <span class="review-meta">via Facebook</span>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="reviews-nav">
+        <button type="button" class="reviews-btn js-reviews-prev" aria-label="Previous review">&lsaquo;</button>
+        <div class="reviews-dots js-reviews-dots" role="tablist" aria-label="Choose review"></div>
+        <button type="button" class="reviews-btn js-reviews-next" aria-label="Next review">&rsaquo;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <footer class="footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <h3>Diet Hub</h3>
+        <h3>Diet Hub Ph</h3>
         <p>Healthy meal prep made from scratch in Maasin, Southern Leyte. Premium brown rice, no artificial preservatives, eco-friendly packaging.</p>
         <div class="social-links">
           <a href="https://www.facebook.com/diethub.ph" target="_blank" rel="noopener" aria-label="Facebook">
@@ -370,7 +194,7 @@
         </ul>
       </div>
     </div>
-    <div class="footer-bottom">© 2026 Diet Hub · Maasin, Southern Leyte · Eat well. Live well. Be well.</div>
+    <div class="footer-bottom">© 2026 Diet Hub Ph · Maasin, Southern Leyte · Eat well. Live well. Be well.</div>
   </div>
 </footer>
 
