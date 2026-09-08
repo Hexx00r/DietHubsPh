@@ -7,7 +7,7 @@
    * ------------------------------------------------------------------ */
   // Inbound webhook feeding the GoHighLevel automation (verified 200 OK on 2026-09-07).
   // If this endpoint is unavailable at order time, orders are saved locally as a mock.
-  var WEBHOOK_URL = 'https://hook.eu1.make.com/cibub2nibjh4vir5g4x8lcfcr9lramad';
+  var WEBHOOK_URL = 'https://diethub-worker.paulsunny.workers.dev/order?secret=dh2026-secure-key-90w4dnxc';
   var WEBHOOK_TIMEOUT_MS = 12000;
   var CART_KEY = 'diethub_cart';
   var MOCK_KEY = 'diethub_mock_orders';
